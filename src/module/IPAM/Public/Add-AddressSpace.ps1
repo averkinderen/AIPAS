@@ -27,10 +27,12 @@ Function Add-AddressSpace {
         [String]$ClientId,
         [parameter(Mandatory = $true)]    
         [String]$ClientSecret,
-        [parameter(Mandatory = $true)]
+        [parameter(Mandatory = $false)]
         [String[]]$NetworkAddress,
-        [parameter(Mandatory = $true)]
-        [String[]]$Region
+        [parameter(Mandatory = $false)]
+        [String[]]$Region,
+        [parameter(Mandatory = $false)]    
+        $InputObject
     )
 
     begin {
@@ -73,6 +75,9 @@ Function Add-AddressSpace {
 
     }
     process {
+        $InputObject = $InputObject | ConvertFrom-Json
+        $NetworkAddress = $InputObject.NetworkAddress
+        $Region = $InputObject.Region
         foreach ($Address in $NetworkAddress) {
             # Add new record
             $Result = New-IPAMRecord -NetworkAddress $Address -Region $Region | ConvertTo-Json        
