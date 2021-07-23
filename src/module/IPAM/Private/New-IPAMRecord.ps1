@@ -10,7 +10,9 @@ Function New-IPAMRecord {
     (
         [Parameter(Mandatory = $true)]
         [string]
-        $NetworkAddress
+        $NetworkAddress,
+        [parameter(Mandatory = $true)]
+        [String[]]$Region
     )
 
     process {
@@ -26,6 +28,7 @@ Function New-IPAMRecord {
             'LastAddress'          = $IPAMRecord.lastaddress
             'Hosts'                = $($IPAMRecord.hosts)
             'Subscription'         = $null
+            'Region'               = $Region
             'ResourceGroup'        = $null
             'LastModifiedDateTime' = $(Get-Date -f o)
         }

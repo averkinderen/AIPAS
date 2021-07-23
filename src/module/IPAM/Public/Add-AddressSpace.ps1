@@ -28,7 +28,9 @@ Function Add-AddressSpace {
         [parameter(Mandatory = $true)]    
         [String]$ClientSecret,
         [parameter(Mandatory = $true)]
-        [String[]]$NetworkAddress
+        [String[]]$NetworkAddress,
+        [parameter(Mandatory = $true)]
+        [String[]]$Region
     )
 
     begin {
@@ -73,7 +75,7 @@ Function Add-AddressSpace {
     process {
         foreach ($Address in $NetworkAddress) {
             # Add new record
-            $Result = New-IPAMRecord -NetworkAddress $Address | ConvertTo-Json        
+            $Result = New-IPAMRecord -NetworkAddress $Address -Region $Region | ConvertTo-Json        
   
             if ($Address -notin $AddressSpaces.NetworkAddress) {
                 Write-Verbose -Message ('Network Address {0} not in Storage Table {1}' -f $Address, $StorageTableName)

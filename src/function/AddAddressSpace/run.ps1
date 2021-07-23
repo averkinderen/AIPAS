@@ -13,8 +13,14 @@ Write-Verbose ('Request Object: {0}' -f ($request | convertto-json)) -Verbose
 
 # Interact with query parameters or the body of the request.
 $NetworkAddress = $Request.Query.NetworkAddress
+$Region = $Request.Query.Region
+
 if (-not $NetworkAddress) {
     $NetworkAddress = $Request.Body.NetworkAddress
+}
+
+if (-not $Region) {
+    $Region = $Request.Body.Region
 }
 
 if ($NetworkAddress) {
@@ -30,6 +36,7 @@ if ($NetworkAddress) {
             'ClientId'           = $env:AIPASClientId
             'ClientSecret'       = $env:AIPASClientSecret
             'NetworkAddress'     = $NetworkAddress
+            'Region'             = $Region   
         }
 
         $Body = Add-AddressSpace @params -ErrorAction Stop
