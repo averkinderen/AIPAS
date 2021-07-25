@@ -9,13 +9,15 @@ Write-Host "PowerShell HTTP trigger function AddAddressSpace processed a request
 # Get TriggerMetadata
 Write-Verbose ($TriggerMetadata | Convertto-Json) -Verbose
 
-# Interact with query parameters or the body of the request.
-$InputObject = $Request.Body.InputObject
-
 Write-Verbose ('Request Object: {0}' -f ($request | convertto-json)) -Verbose
 
+# Interact with query parameters or the body of the request.
+$NetworkAddress = $Request.Query.NetworkAddress
+if (-not $NetworkAddress) {
+    $NetworkAddress = $Request.Body.NetworkAddress
+}
 
-if ($InputObject) {
+if ($NetworkAddress) {
     
     try {
         $params = @{
@@ -27,7 +29,7 @@ if ($InputObject) {
             'PartitionKey'       = 'IPAM'
             'ClientId'           = $env:AIPASClientId
             'ClientSecret'       = $env:AIPASClientSecret
-            'InputObject'        = $InputObject | ConvertTo-Json -Compress 
+            'NetworkAddress'     = $NetworkAddress
         }
 
         $Body = Add-AddressSpace @params -ErrorAction Stop
