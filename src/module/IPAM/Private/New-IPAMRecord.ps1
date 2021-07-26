@@ -13,6 +13,7 @@ Function New-IPAMRecord {
     )
 
     process {
+        $NetworkAddress = $NetworkAddress | ConvertFrom-Json
         $IPAMRecord = New-IPCalculator -NetworkAddress $NetworkAddress.cidr
         [PSCustomObject]@{
             'PartitionKey'         = 'ipam'
