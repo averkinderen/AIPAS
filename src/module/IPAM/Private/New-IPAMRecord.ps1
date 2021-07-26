@@ -9,23 +9,24 @@ Function New-IPAMRecord {
     Param
     (
         [Parameter(Mandatory = $true)]
-        $NetworkAddress
+        $NetworkAddress,
+        [Parameter(Mandatory = $true)]
+        $Region
     )
 
     process {
-        $NetworkAddress = $NetworkAddress | ConvertFrom-Json
-        $IPAMRecord = New-IPCalculator -NetworkAddress $NetworkAddress.cidr
+        $IPAMRecord = New-IPCalculator -NetworkAddress $NetworkAddress
         [PSCustomObject]@{
             'PartitionKey'         = 'ipam'
             'RowKey'               = $(New-Guid).Guid
             'CreatedDateTime'      = $(Get-Date -f o)
             'Allocated'            = 'False'
             'VirtualNetworkName'   = $null
-            'NetworkAddress'       = $NetworkAddress.cidr
+            'NetworkAddress'       = $NetworkAddress
             'FirstAddress'         = $IPAMRecord.firstaddress
             'LastAddress'          = $IPAMRecord.lastaddress
             'Hosts'                = $($IPAMRecord.hosts)
-            'Region'               = $NetworkAddress.region
+            'Region'               = $Region
             'Subscription'         = $null
             'ResourceGroup'        = $null
             'LastModifiedDateTime' = $(Get-Date -f o)
