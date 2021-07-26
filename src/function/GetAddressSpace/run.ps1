@@ -19,6 +19,7 @@ if (-not $Region) {
 
 if ($Region) {   
     $Body="Region set as $Region"
+    $StatusCode = [HttpStatusCode]::OK
     <# 
     try {
         $params = @{
@@ -45,6 +46,7 @@ if ($Region) {
 }
 else {
     $Body="No Region Set"
+    $StatusCode = [HttpStatusCode]::OK
     <#
     try {
         $params = @{
