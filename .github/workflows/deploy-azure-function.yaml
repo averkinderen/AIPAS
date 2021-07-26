@@ -41,12 +41,12 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS}}
       # Create Function App in Azure
-      - name: Azure CLI Action - Create Function App
-        uses: Azure/cli@1.0.4
-        with:
-          # Specify the script here
-          inlineScript: |
-            az functionapp create --resource-group ${{ env.RESOURCEGROUPNAME }} --consumption-plan-location ${{ env.REGION }} --runtime powershell --functions-version 3 --name $AZURE_FUNCTIONAPP_NAME --storage-account ${{ env.STORAGEACCOUNTNAME }}
+      # - name: Azure CLI Action - Create Function App
+      #   uses: Azure/cli@1.0.4
+      #   with:
+      #     # Specify the script here
+      #     inlineScript: |
+      #       az functionapp create --resource-group ${{ env.RESOURCEGROUPNAME }} --consumption-plan-location ${{ env.REGION }} --runtime powershell --functions-version 3 --name $AZURE_FUNCTIONAPP_NAME --storage-account ${{ env.STORAGEACCOUNTNAME }}
       # Publish Azure Function${{needs.build-and-deploy-storageaccount.outputs.ResourceGroupName}}
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1

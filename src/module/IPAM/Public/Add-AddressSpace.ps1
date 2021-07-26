@@ -44,7 +44,7 @@ Function Add-AddressSpace {
             'ClientId'           = $ClientId
             'ClientSecret'       = $ClientSecret
         }
-     
+<#     
         $AddressSpaces = Get-AddressSpace @params
 
         # Call helper functions Get-AccessToken and Get-SharedAccessKey
@@ -69,12 +69,13 @@ Function Add-AddressSpace {
             "x-ms-version" = $Version
             Accept         = 'application/json'
         }
+#>
     }
     process {
         $NetworkAddresses = $NetworkAddresses | ConvertFrom-Json
         foreach ($Address in $NetworkAddresses) {
-            #$outstring = $outstring + "Address: " + $Address.cidr + "and Region:" + $Address.region + "`n"
-
+            $outstring = $outstring + "Address: " + $Address.cidr + "and Region:" + $Address.region + "`n"
+<#
             # Add new record
             $Result = New-IPAMRecord -NetworkAddress $Address | ConvertTo-Json        
   
@@ -93,11 +94,10 @@ Function Add-AddressSpace {
             else {
                 Write-Error -Message ('Address Space {0} already added' -f $Address.cidr)
             }
-        }
-<#
-        $outstring = $outstring + "Addresses:" + $AddressSpaces
-        Return $NetworkAddresses
 #>
+        }
+
+        Return "Outstring: $outstring `n" + $NetworkAddresses
     }
     end {
         #Clean up
