@@ -26,7 +26,9 @@ Function Get-AddressSpace {
         [parameter(Mandatory = $true)]    
         $ClientId,
         [parameter(Mandatory = $true)]    
-        $ClientSecret
+        $ClientSecret,
+        [parameter(Mandatory = $false)]
+        $Region
     )
 
     try {

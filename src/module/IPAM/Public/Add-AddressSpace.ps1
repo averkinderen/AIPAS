@@ -89,7 +89,9 @@ Function Add-AddressSpace {
                 Invoke-RestMethod @params
             }
             else {
-                Write-Output -Message ('Address Space {0} already added' -f $Address.cidr)
+                [PSCustomObject]@{
+                    'Error'         = 'Address Space {0} already added' -f $Address.cidr
+                }
             }
         }
     }
