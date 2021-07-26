@@ -72,12 +72,12 @@ Function Add-AddressSpace {
     }
     process {
         #$NetworkAddressesOriginal = $NetworkAddresses
-        #$NetworkAddresses = $NetworkAddresses | ConvertFrom-Json
+        $NetworkAddresses = $NetworkAddresses | ConvertFrom-Json
         foreach ($Address in $NetworkAddresses) {
             #$outstring = $outstring + "Address: " + $Address.cidr + "and Region:" + $Address.region + "`n"
 
             # Add new record
-            $Result = New-IPAMRecord -NetworkAddress $Address.cidr -Region $Address.region | ConvertTo-Json        
+            $Result = New-IPAMRecord -NetworkAddress $($Address | ConvertTo-Json) | ConvertTo-Json        
   
             if ($Address.cidr -notin $AddressSpaces.NetworkAddress) {
                 Write-Verbose -Message ('Network Address {0} not in Storage Table {1}' -f $Address.cidr, $StorageTableName)
