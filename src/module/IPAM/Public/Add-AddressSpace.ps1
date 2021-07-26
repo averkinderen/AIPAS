@@ -72,7 +72,7 @@ Function Add-AddressSpace {
     }
     process {
         foreach ($Address in $NetworkAddresses) {
-            $outstring =+ " | Address: " + $Address.cidr + "and Region:" + $Address.region
+            $outstring = $outstring + "Address: " + $Address.cidr + "and Region:" + $Address.region + "`n"
 <#            
             # Add new record
             $Result = New-IPAMRecord -NetworkAddress $Address | ConvertTo-Json        

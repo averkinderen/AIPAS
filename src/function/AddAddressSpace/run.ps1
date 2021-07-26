@@ -29,7 +29,7 @@ if ($NetworkAddresses) {
             'PartitionKey'       = 'IPAM'
             'ClientId'           = $env:AIPASClientId
             'ClientSecret'       = $env:AIPASClientSecret
-            'NetworkAddresses'     = $NetworkAddresses | ConvertTo-Json -Compress
+            'NetworkAddresses'   = $NetworkAddresses | ConvertTo-Json -Compress
         }
 
         $Body = Add-AddressSpace @params -ErrorAction Stop
