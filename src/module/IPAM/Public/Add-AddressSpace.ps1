@@ -72,6 +72,7 @@ Function Add-AddressSpace {
 #>
     }
     process {
+        $NetworkAddressesOriginal = $NetworkAddresses
         $NetworkAddresses = $NetworkAddresses | ConvertFrom-Json
         foreach ($Address in $NetworkAddresses) {
             $outstring = $outstring + "Address: " + $Address.cidr + "and Region:" + $Address.region + "`n"
@@ -97,7 +98,7 @@ Function Add-AddressSpace {
 #>
         }
 
-        Return "Outstring: $outstring `n" + $NetworkAddresses
+        Return "Outstring: $outstring `n" + $NetworkAddressesOriginal
     }
     end {
         #Clean up
