@@ -71,11 +71,8 @@ Function Add-AddressSpace {
         }
     }
     process {
-        #$NetworkAddressesOriginal = $NetworkAddresses
         $NetworkAddresses = $NetworkAddresses | ConvertFrom-Json
         foreach ($Address in $NetworkAddresses) {
-            #$outstring = $outstring + "Address: " + $Address.cidr + "and Region:" + $Address.region + "`n"
-
             # Add new record
             $Result = New-IPAMRecord -NetworkAddress $($Address | ConvertTo-Json) | ConvertTo-Json        
   
@@ -92,16 +89,12 @@ Function Add-AddressSpace {
                 Invoke-RestMethod @params
             }
             else {
-                Write-Error -Message ('Address Space {0} already added' -f $Address.cidr)
+                Write-Output -Message ('Address Space {0} already added' -f $Address.cidr)
             }
-
         }
-
-        #Return "Outstring: $outstring `n" + $NetworkAddressesOriginal
     }
     end {
         #Clean up
         Remove-Variable -Name Result, AddressSpaces, NetworkAddresses
-    
     }   
 }
