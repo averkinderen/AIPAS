@@ -76,7 +76,7 @@ Function Add-AddressSpace {
             $Result = New-IPAMRecord -NetworkAddress $Address | ConvertTo-Json        
   
             if ($Address.cidr -notin $AddressSpaces.NetworkAddress) {
-                Write-Verbose -Message ('Network Address {0} not in Storage Table {1}' -f $Address, $StorageTableName)
+                Write-Verbose -Message ('Network Address {0} not in Storage Table {1}' -f $Address.cidr, $StorageTableName)
 
                 $params = @{
                     'Uri'         = $uri
@@ -88,7 +88,7 @@ Function Add-AddressSpace {
                 Invoke-RestMethod @params
             }
             else {
-                Write-Error -Message ('Address Space {0} already added' -f $Address)
+                Write-Error -Message ('Address Space {0} already added' -f $Address.cidr)
             }
         }
     }
