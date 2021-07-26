@@ -94,7 +94,7 @@ Function Add-AddressSpace {
     }
     end {
         #Clean up
-        Remove-Variable -Name Result, AddressSpaces, NetworkAddress
+        Remove-Variable -Name Result, AddressSpaces, NetworkAddresses
     
     }   
 }
