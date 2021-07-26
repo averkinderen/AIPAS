@@ -40,7 +40,12 @@ Function Get-AddressSpace {
         $SharedKeys = Get-SharedAccessKey -AccessToken $($Token.access_token) -SubscriptionId $SubscriptionId -ResourceGroupName $ResourceGroupName -StorageAccountName $StorageAccountName 
         $StorageAccountKey = $($SharedKeys[0].value)
 
-        $uri = ('https://{0}.table.core.windows.net/{1}' -f $StorageAccountName, $StorageTableName)
+        if ($Region) {
+            $uri = ('https://{0}.table.core.windows.net/{1}?$filter=Region%20eq%20{2}' -f $StorageAccountName, $StorageTableName, $Region)
+        }
+        else {
+            $uri = ('https://{0}.table.core.windows.net/{1}' -f $StorageAccountName, $StorageTableName)
+        }
 
         $Headers = New-Header -Resource $StorageTableName -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey
 
