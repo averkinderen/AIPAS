@@ -18,9 +18,6 @@ if (-not $Region) {
 }
 
 if ($Region) {   
-    $Body="Region set as $Region"
-    $StatusCode = [HttpStatusCode]::OK
-    <# 
     try {
         $params = @{
             'StorageAccountName' = $env:AIPASStorageAccountName
@@ -42,12 +39,8 @@ if ($Region) {
         $StatusCode = [HttpStatusCode]::BadRequest
         $Body = $_.Exception.Message
     }
-    #>
 }
 else {
-    $Body="No Region Set"
-    $StatusCode = [HttpStatusCode]::OK
-    <#
     try {
         $params = @{
             'StorageAccountName' = $env:AIPASStorageAccountName
@@ -68,7 +61,6 @@ else {
         $StatusCode = [HttpStatusCode]::BadRequest
         $Body = $_.Exception.Message
     }
-    #>
 }
 
 # Associate values to output bindings by calling 'Push-OutputBinding'.

@@ -41,7 +41,7 @@ Function Get-AddressSpace {
         $StorageAccountKey = $($SharedKeys[0].value)
 
         if ($Region) {
-            $uri = ('https://{0}.table.core.windows.net/{1}?$filter=Region%20eq%20{2}' -f $StorageAccountName, $StorageTableName, $Region)
+            $uri = ('https://{0}.table.core.windows.net/{1}?$filter=Region%20eq%20%27{2}%27' -f $StorageAccountName, $StorageTableName, $Region) # %20 = <Space>; %27 = '
         }
         else {
             $uri = ('https://{0}.table.core.windows.net/{1}' -f $StorageAccountName, $StorageTableName)
