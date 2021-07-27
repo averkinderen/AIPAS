@@ -71,6 +71,7 @@ Function Add-AddressSpace {
         }
     }
     process {
+        $FinalResponse = @()
         $NetworkAddresses = $NetworkAddresses | ConvertFrom-Json
         foreach ($Address in $NetworkAddresses) {
             # Add new record
@@ -86,14 +87,20 @@ Function Add-AddressSpace {
                     'ContentType' = 'application/json'
                     'Body'        = $Result
                 }
-                Invoke-RestMethod @params
+                $Response = Invoke-RestMethod @params
+
+                #Add new address space to array
+                $AddressSpaces = $AddressSpaces + $Response
             }
             else {
-                [PSCustomObject]@{
+                $Response = [PSCustomObject]@{
                     'Error'         = 'Address Space {0} already added' -f $Address.cidr
                 }
             }
+            # Add to final Response
+            $FinalResponse = $FinalResponse + $Response
         }
+        Return $FinalResponse
     }
     end {
         #Clean up
