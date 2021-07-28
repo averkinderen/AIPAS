@@ -63,66 +63,63 @@ Function Register-AddressSpace {
     try {
         # Check if Address Space was not already registered
         $InputObject = $InputObject | ConvertFrom-Json
-        if (!(Get-AddressSpace @params | Where-Object { $_.ResourceGroup -eq $($inputObject.ResourceGroup) -and $_.VirtualNetworkName -eq $($inputObject.VirtualNetworkName) })) {
-            # Get free address space
-            $FreeAddressSpace = Get-AddressSpace @params | 
-            Where-Object { $_.Allocated -eq 'False' } |                 
-            Sort-Object -Property 'CreatedDateTime' | Select-Object -First 1
 
-            if ($FreeAddressSpace.count -eq 1) {
-                # Set Allocated property of assigned Address Space
-                Write-Verbose -Message ('Setting Allocated property for assigned address space {0}' -f $($FreeAddressSpace.NetworkAddress))
-                $resource = "$StorageTableName(PartitionKey='$($FreeAddressSpace.PartitionKey)',RowKey='$($FreeAddressSpace.RowKey)')"
-                $uri = ('https://{0}.table.core.windows.net/{1}' -f $StorageAccountName, $resource)
-                $Headers = New-Header -Resource $Resource -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey
-    
-                $Body = @{
-                    'PartitionKey'         = $FreeAddressSpace.RowKey
-                    'RowKey'               = $FreeAddressSpace.RowKey
-                    'CreatedDateTime'      = $FreeAddressSpace.CreatedDateTime
-                    'Allocated'            = "True"
-                    'VirtualNetworkName'   = $null
-                    'NetworkAddress'       = $FreeAddressSpace.NetworkAddress
-                    'FirstAddress'         = $FreeAddressSpace.FirstAddress
-                    'LastAddress'          = $FreeAddressSpace.LastAddress
-                    'Hosts'                = $FreeAddressSpace.Hosts
-                    'Subscription'         = $null
-                    'ResourceGroup'        = $null
-                    'LastModifiedDateTime' = $(Get-Date -f o)
-                } | ConvertTo-Json
+        # Get free address space
+        $FreeAddressSpace = Get-AddressSpace @params | 
+        Where-Object { $_.Allocated -eq 'False' -and  $_.Region -eq $($inputObject.Region) } |                 
+        Sort-Object -Property 'CreatedDateTime' | Select-Object -First 1
 
-                Write-Verbose -Message ('{0}' -f $Body)
-    
-                $params = @{
-                    'Uri'         = $uri
-                    'Headers'     = $Headers
-                    'Method'      = 'Put'
-                    'ContentType' = 'application/json'
-                    'Body'        = $Body
-                }
+        if ($FreeAddressSpace.count -eq 1) {
+            # Set Allocated property of assigned Address Space
+            Write-Verbose -Message ('Setting Allocated property for assigned address space {0}' -f $($FreeAddressSpace.NetworkAddress))
+            $resource = "$StorageTableName(PartitionKey='$($FreeAddressSpace.PartitionKey)',RowKey='$($FreeAddressSpace.RowKey)')"
+            $uri = ('https://{0}.table.core.windows.net/{1}' -f $StorageAccountName, $resource)
+            $Headers = New-Header -Resource $Resource -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey
 
-                $null = Invoke-RestMethod @params
-                # retrieve Updated Registered Address Space.
-                $params = @{
-                    'StorageAccountName' = $StorageAccountName
-                    'StorageTableName'   = 'ipam'
-                    'TenantId'           = $TenantId
-                    'SubscriptionId'     = $SubscriptionId
-                    'ResourceGroupName'  = $ResourceGroupName
-                    'PartitionKey'       = 'IPAM'
-                    'ClientId'           = $ClientId
-                    'ClientSecret'       = $ClientSecret
-                }
+            $Body = @{
+                'PartitionKey'         = $FreeAddressSpace.RowKey
+                'RowKey'               = $FreeAddressSpace.RowKey
+                'CreatedDateTime'      = $FreeAddressSpace.CreatedDateTime
+                'Allocated'            = "True"
+                'VirtualNetworkName'   = $null
+                'NetworkAddress'       = $FreeAddressSpace.NetworkAddress
+                'FirstAddress'         = $FreeAddressSpace.FirstAddress
+                'LastAddress'          = $FreeAddressSpace.LastAddress
+                'Hosts'                = $FreeAddressSpace.Hosts
+                'Region'               = $FreeAddressSpace.Region
+                'Subscription'         = $null
+                'ResourceGroup'        = $null
+                'LastModifiedDateTime' = $(Get-Date -f o)
+            } | ConvertTo-Json
 
-                Get-AddressSpace @params | Where-Object {$_.RowKey -eq $FreeAddressSpace.RowKey} | Select-Object -ExcludeProperty "odata*"
+            Write-Verbose -Message ('{0}' -f $Body)
+
+            $params = @{
+                'Uri'         = $uri
+                'Headers'     = $Headers
+                'Method'      = 'Put'
+                'ContentType' = 'application/json'
+                'Body'        = $Body
             }
-            else {
-                Throw
+
+            $null = Invoke-RestMethod @params
+            # retrieve Updated Registered Address Space.
+            $params = @{
+                'StorageAccountName' = $StorageAccountName
+                'StorageTableName'   = 'ipam'
+                'TenantId'           = $TenantId
+                'SubscriptionId'     = $SubscriptionId
+                'ResourceGroupName'  = $ResourceGroupName
+                'PartitionKey'       = 'IPAM'
+                'ClientId'           = $ClientId
+                'ClientSecret'       = $ClientSecret
             }
+
+            Get-AddressSpace @params | Where-Object {$_.RowKey -eq $FreeAddressSpace.RowKey} | Select-Object -ExcludeProperty "odata*"
         }
-        # Return already registered Address Space
-        Get-AddressSpace @params | Where-Object { $_.ResourceGroup -eq $($inputObject.ResourceGroup) -and $_.VirtualNetworkName -eq $($inputObject.VirtualNetworkName) } |
-            Select-Object -ExcludeProperty "odata*"
+        else {
+            Throw
+        }
     }
     catch {
         Throw ('Failed to register free address space')
